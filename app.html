@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سوق العرب الذكي</title>
+  <style>
+    :root {
+      --primary: #0f5132;
+      --primary-light: #198754;
+      --accent: #d4af37;
+      --bg: #f4f7f5;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding-bottom: 84px;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    }
+    .top-bar {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(255,255,255,0.14);
+      border: 1.5px solid var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .brand h1 { font-size: 18px; font-weight: 700; }
+    .brand p { font-size: 11.5px; color: #dcfce7; }
+    .wa-top {
+      background: var(--accent); color: #111827; text-decoration: none;
+      padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 12.5px;
+      white-space: nowrap;
+    }
+    .nav-tabs {
+      max-width: 960px; margin: 12px auto 0;
+      display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+    }
+    .tab-btn {
+      background: rgba(255,255,255,0.14); color: #fff; border: none;
+      padding: 8px 14px; border-radius: 999px; font-size: 13px;
+      cursor: pointer; white-space: nowrap; font-family: inherit;
+    }
+    .tab-btn.active { background: #fff; color: var(--primary); font-weight: 700; }
+    main { max-width: 960px; margin: 16px auto; padding: 0 14px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px; margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+    }
+    .section-title { font-size: 17px; color: var(--primary); font-weight: 700; margin-bottom: 6px; }
+    .section-sub { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .chip {
+      border: 1px solid var(--border); background: #fff; color: var(--text);
+      padding: 6px 12px; border-radius: 999px; font-size: 12.5px;
+      cursor: pointer; font-family: inherit;
+    }
+    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 12px; }
+    .item-card {
+      border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+      background: #fff; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+    }
+    .badge {
+      display: inline-block; background: #ecfdf5; color: var(--primary);
+      font-size: 11.5px; padding: 3px 9px; border-radius: 999px; font-weight: 700; margin-bottom: 6px;
+    }
+    .price { font-size: 16px; font-weight: 700; color: var(--primary); }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      border: none; border-radius: 10px; padding: 9px 12px; font-size: 13px;
+      cursor: pointer; font-family: inherit; font-weight: 700; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-gold { background: var(--accent); color: #111827; }
+    .btn-outline { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-danger { background: #fee2e2; color: #991b1b; padding: 5px 9px; font-size: 12px; }
+    .input-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    input, select {
+      padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px;
+      font-size: 14px; font-family: inherit; background: #fff; flex: 1; min-width: 140px;
+    }
+    .envelopes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 12px 0; }
+    .env-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    .env-box strong { display: block; color: var(--primary); font-size: 14px; }
+    .env-box span { font-size: 16px; font-weight: 700; }
+    .exp-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13.5px;
+    }
+    .tasbeeh-box { text-align: center; padding: 14px; background: #f8fafc; border-radius: 14px; border: 1px solid var(--border); }
+    .tasbeeh-count { font-size: 38px; font-weight: 700; color: var(--primary); margin: 8px 0; }
+    .verses-box {
+      background: #fefce8; border: 1px solid #fde68a; border-radius: 12px;
+      padding: 14px; margin-top: 10px; font-size: 15px; line-height: 2;
+    }
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55);
+      z-index: 60; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-card {
+      background: #fff; border-radius: 16px; max-width: 600px; width: 100%;
+      max-height: 85vh; overflow-y: auto; padding: 20px; box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .close-btn {
+      background: #f1f5f9; border: none; width: 34px; height: 34px;
+      border-radius: 50%; font-size: 18px; cursor: pointer;
+    }
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
+      border-top: 1px solid var(--border); display: flex; justify-content: space-around;
+      padding: 6px 4px; z-index: 40;
+    }
+    .b-item {
+      background: none; border: none; color: var(--muted); font-size: 11px;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      cursor: pointer; font-family: inherit; padding: 4px 6px;
+    }
+    .b-item.active { color: var(--primary); font-weight: 700; }
+    .toast {
+      position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%);
+      background: #1e293b; color: #fff; padding: 8px 16px; border-radius: 999px;
+      font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 70;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top-bar">
+      <div class="brand">
+        <div class="brand-icon">☆</div>
+        <div>
+          <h1>سوق العرب الذكي</h1>
+          <p>متجر رقمي • حسبة بركة • واحة القرآن • دوائي • مطبخي</p>
+        </div>
+      </div>
+      <a class="wa-top" href="https://wa.me/967780356803?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20%D8%A8%D9%83%D9%85%20%D9%81%D9%8A%20%D8%B3%D9%88%D9%82%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%20%D8%A7%D9%84%D8%B0%D9%83%D9%8A" target="_blank">واتساب</a>
+    </div>
+    <div class="nav-tabs" id="topTabs">
+      <button class="tab-btn active" data-tab="store">المتجر والدورات</button>
+      <button class="tab-btn" data-tab="budget">حسبة بركة</button>
+      <button class="tab-btn" data-tab="quran">واحة القرآن</button>
+      <button class="tab-btn" data-tab="health">منصة دوائي</button>
+      <button class="tab-btn" data-tab="kitchen">منصة مطبخي</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. المتجر والدورات -->
+    <section id="store" class="section active">
+      <div class="card">
+        <div class="section-title">المتجر الرقمي والدورات التعليمية</div>
+        <div class="section-sub">تصفّح المنتجات الرقمية والدورات والباقات واطلب مباشرة عبر واتساب.</div>
+        <div class="filters" id="storeFilters">
+          <button class="chip active" data-cat="all">الكل</button>
+          <button class="chip" data-cat="courses">الدورات</button>
+          <button class="chip" data-cat="books">الكتب والمنتجات الرقمية</button>
+          <button class="chip" data-cat="bundles">الباقات</button>
+        </div>
+        <div class="grid" id="productsGrid"></div>
+      </div>
+    </section>
+
+    <!-- 2. حسبة بركة / راتبي يكفيني -->
+    <section id="budget" class="section">
+      <div class="card">
+        <div class="section-title">حسبة بركة / راتبي يكفيني</div>
+        <div class="section-sub">أدخل دخلك الشهري لتوزيع الأظرف تلقائياً وتابع مصروفاتك اليومية.</div>
+        <div class="input-row">
+          <input type="number" id="salaryInput" placeholder="أدخل الراتب أو الدخل الشهري" min="0" />
+          <button class="btn btn-primary" id="calcSalaryBtn">احسب الأظرف</button>
+        </div>
+        <div class="envelopes">
+          <div class="env-box"><strong>الأساسيات (50%)</strong><span id="envNeeds">0</span></div>
+          <div class="env-box"><strong>الادخار والبركة (20%)</strong><span id="envSave">0</span></div>
+          <div class="env-box"><strong>الاحتياجات والأسرة (20%)</strong><span id="envFamily">0</span></div>
+          <div class="env-box"><strong>التطوير والمرونة (10%)</strong><span id="envGrowth">0</span></div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0" />
+        <div class="section-title" style="font-size:15px">تسجيل مصروف يومي</div>
+        <div class="input-row">
+          <input type="text" id="expTitle" placeholder="بند المصروف (مثال: خضار، مواصلات)" />
+          <input type="number" id="expAmount" placeholder="المبلغ" min="0" />
+          <button class="btn btn-gold" id="addExpBtn">إضافة</button>
+        </div>
+        <div id="expensesList"></div>
+        <div style="margin-top:12px;font-weight:700;color:var(--primary)">إجمالي المصروفات: <span id="totalExp">0</span></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-outline" id="copySummaryBtn">نسخ الملخص</button>
+          <button class="btn btn-primary" id="waSummaryBtn">إرسال الملخص واتساب</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. واحة القرآن -->
+    <section id="quran" class="section">
+      <div class="card">
+        <div class="section-title">واحة القرآن والمتون والقراءات</div>
+        <div class="section-sub">المسبحة الإلكترونية، مخارج الحروف من المقدمة الجزرية، المتون، والقواعد.</div>
+        <div class="tasbeeh-box">
+          <div style="font-weight:700;color:var(--primary)">المسبحة الإلكترونية</div>
+          <div class="tasbeeh-count" id="tasbeehVal">0</div>
+          <div class="btn-row" style="justify-content:center">
+            <button class="btn btn-primary" id="incTasbeehBtn">سبّح (+1)</button>
+            <button class="btn btn-outline" id="resetTasbeehBtn">تصفير</button>
+          </div>
+        </div>
+        <div class="grid" style="margin-top:14px">
+          <div class="item-card">
+            <div>
+              <span class="badge">المقدمة الجزرية</span>
+              <h3 style="font-size:15px;margin-bottom:4px">باب مخارج الحروف (كامل الأبيات)</h3>
+              <p style="font-size:13px;color:var(--muted)">أبيات الإمام ابن الجزري كاملة في مخارج الحروف السبعة عشر.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openJazariModal()">عرض الأبيات الكاملة</button>
+          </div>
+          <div class="item-card">
+            <div>
+              <span class="badge">تحفة الأطفال</span>
+              <h3 style="font-size:15px;margin-bottom:4px">أحكام النون الساكنة والتنوين</h3>
+              <p style="font-size:13px;color:var(--muted)">مقدمة وأبيات الإظهار والإدغام والإقلاب والإخفاء.</p>
+            </div>
+            <button class="btn btn-outline" onclick="openTuhfaModal()">عرض الأبيات</button>
+          </div>
+          <div class="item-card">
+            <div>
+              <span class="badge">القراءات والقواعد</span>
+              <h3 style="font-size:15px;margin-bottom:4px">القراءات العشر والقاعدة النورانية</h3>
+              <p style="font-size:13px;color:var(--muted)">دليل مختصر للقراءات العشر ومتن الشاطبية والدرة والقاعدة النورانية والبيان المصري.</p>
+            </div>
+            <button class="btn btn-outline" onclick="openQiraatModal()">عرض الدليل</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. منصة دوائي -->
+    <section id="health" class="section">
+      <div class="card">
+        <div class="section-title">منصة دوائي — متابعة وإرشادات الأسرة وكبار السن</div>
+        <div class="section-sub">تذكير بالمواعيد اليومية ونصائح العناية اليومية.</div>
+        <div class="input-row">
+          <input type="text" id="medName" placeholder="اسم الدواء أو الإرشاد" />
+          <input type="text" id="medTime" placeholder="الوقت (مثال: 8:00 صباحاً)" />
+          <button class="btn btn-primary" id="addMedBtn">إضافة موعد</button>
+        </div>
+        <div id="medsList"></div>
+      </div>
+    </section>
+
+    <!-- 5. منصة مطبخي -->
+    <section id="kitchen" class="section">
+      <div class="card">
+        <div class="section-title">منصة مطبخي — وصفات ومقترحات سهلة</div>
+        <div class="section-sub">وصفات سريعة ومناسبة للأسرة والضيافة.</div>
+        <div class="grid" id="recipesGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- نافذة منبثقة للتفاصيل والأبيات -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="modalTitle" style="font-size:17px;color:var(--primary)"></h3>
+        <button class="close-btn" id="closeModalBtn">×</button>
+      </div>
+      <div id="modalBody" style="font-size:14px"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <nav class="bottom-nav">
+    <button class="b-item active" data-tab="store"><span>🛍️</span><span>المتجر</span></button>
+    <button class="b-item" data-tab="budget"><span>💰</span><span>حسبة بركة</span></button>
+    <button class="b-item" data-tab="quran"><span>📖</span><span>القرآن</span></button>
+    <button class="b-item" data-tab="health"><span>💊</span><span>دوائي</span></button>
+    <button class="b-item" data-tab="kitchen"><span>🍲</span><span>مطبخي</span></button>
+  </nav>
+
+  <script>
+    const WA_PHONE = "967780356803";
+    const products = [
+      { id: 1, cat: "courses", title: "دورة المنتجات الرقمية والذكاء الاصطناعي", price: "$25", desc: "دورة عملية لبناء وتسويق المنتجات الرقمية والخدمات الذكية خطوة بخطوة." },
+      { id: 2, cat: "books", title: "كتاب تلوين الحيوانات اللطيفة (30 صفحة)", price: "$7", desc: "كتاب نشاط وتلوين رقمي ممتع ومناسب للأطفال." },
+      { id: 3, cat: "books", title: "الدليل التعليمي الرقمي (20 صفحة)", price: "$9", desc: "دليل تعليمي منسق وجاهز للطباعة والقراءة الرقمية." },
+      { id: 4, cat: "bundles", title: "باقة صانع المحتوى والمنتجات الرقمية", price: "$35", desc: "تجمع بين الدورة التدريبية والنماذج والأدلة الرقمية بسعر باقة مخفّض." }
+    ];
+
+    const recipes = [
+      { title: "كرات البسكويت بالشوكولاتة وجوز الهند", time: "20 دقيقة", ing: "بسكويت مطحون، كاكاو، حليب مكثف أو عسل، جوز هند للتغطية.", steps: "تُخلط المكونات جيداً حتى تتشكل عجينة متماسكة، تُكوّر وتُغلف بجوز الهند وتُبرّد." },
+      { title: "شوربة عدس دافئة بالكمون والليمون", time: "25 دقيقة", ing: "عدس أصفر، بصلة، جزر، كمون، ملح، عصير ليمون.", steps: "تُسلق المكونات وتُخلط جيداً حتى تصبح ناعمة، وتُتبّل وتُقدّم ساخنة مع الليمون." }
+    ];
+
+    let state = JSON.parse(localStorage.getItem("souq_arab_state_v1") || "null") || {
+      salary: 0,
+      expenses: [{ id: 1, title: "مستلزمات منزلية", amount: 1500 }],
+      tasbeeh: 0,
+      meds: [{ id: 1, name: "شرب كوب ماء صباحاً", time: "بعد الاستيقاظ", done: false }]
+    };
+
+    function saveState() {
+      localStorage.setItem("souq_arab_state_v1", JSON.stringify(state));
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2200);
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".section").forEach(s => s.classList.toggle("active", s.id === tabId));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tabId));
+      document.querySelectorAll(".b-item").forEach(b => b.classList.toggle("active", b.dataset.tab === tabId));
+    }
+
+    document.querySelectorAll("[data-tab]").forEach(el => {
+      el.addEventListener("click", () => switchTab(el.dataset.tab));
+    });
+
+    function renderProducts(cat = "all") {
+      const grid = document.getElementById("productsGrid");
+      const list = cat === "all" ? products : products.filter(p => p.cat === cat);
+      grid.innerHTML = list.map(p => `
+        <div class="item-card">
+          <div>
+            <span class="badge">${p.cat === "courses" ? "دورة" : p.cat === "books" ? "منتج رقمي" : "باقة"}</span>
+            <h3 style="font-size:15px;margin-bottom:4px">${p.title}</h3>
+            <p style="font-size:13px;color:var(--muted)">${p.desc}</p>
+          </div>
+          <div>
+            <div class="price" style="margin-bottom:8px">${p.price}</div>
+            <div class="btn-row">
+              <button class="btn btn-outline" onclick="openProductModal(${p.id})">التفاصيل</button>
+              <a class="btn btn-primary" target="_blank" href="https://wa.me/${WA_PHONE}?text=${encodeURIComponent("مرحباً، أرغب بطلب: " + p.title + " (" + p.price + ") من سوق العرب الذكي")}">اطلب واتساب</a>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    document.querySelectorAll("#storeFilters .chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll("#storeFilters .chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        renderProducts(chip.dataset.cat);
+      });
+    });
+
+    function openModal(title, html) {
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalBody").innerHTML = html;
+      document.getElementById("modalBackdrop").classList.add("open");
+    }
+
+    document.getElementById("closeModalBtn").addEventListener("click", () => {
+      document.getElementById("modalBackdrop").classList.remove("open");
+    });
+
+    function openProductModal(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      openModal(p.title, `
+        <p style="margin-bottom:10px">${p.desc}</p>
+        <p style="font-weight:700;color:var(--primary);margin-bottom:14px">السعر: ${p.price}</p>
+        <a class="btn btn-primary" target="_blank" href="https://wa.me/${WA_PHONE}?text=${encodeURIComponent("أرغب بالاستفسار وطلب: " + p.title)}">تواصل للطلب عبر واتساب</a>
+      `);
+    }
+
+    function calcEnvelopes() {
+      const s = Number(state.salary) || 0;
+      document.getElementById("salaryInput").value = s || "";
+      document.getElementById("envNeeds").textContent = (s * 0.5).toLocaleString();
+      document.getElementById("envSave").textContent = (s * 0.2).toLocaleString();
+      document.getElementById("envFamily").textContent = (s * 0.2).toLocaleString();
+      document.getElementById("envGrowth").textContent = (s * 0.1).toLocaleString();
+    }
+
+    function renderExpenses() {
+      const listEl = document.getElementById("expensesList");
+      let total = 0;
+      listEl.innerHTML = state.expenses.map(e => {
+        total += Number(e.amount) || 0;
+        return `<div class="exp-item">
+          <span>${e.title} — <strong>${Number(e.amount).toLocaleString()}</strong></span>
+          <button class="btn-danger" onclick="deleteExpense(${e.id})">حذف</button>
+        </div>`;
+      }).join("") || `<p style="color:var(--muted);font-size:13px">لا توجد مصروفات مسجلة بعد.</p>`;
+      document.getElementById("totalExp").textContent = total.toLocaleString();
+    }
+
+    function deleteExpense(id) {
+      state.expenses = state.expenses.filter(e => e.id !== id);
+      saveState();
+      renderExpenses();
+    }
+
+    document.getElementById("calcSalaryBtn").addEventListener("click", () => {
+      state.salary = Number(document.getElementById("salaryInput").value) || 0;
+      saveState();
+      calcEnvelopes();
+      showToast("تم تحديث الأظرف");
+    });
+
+    document.getElementById("addExpBtn").addEventListener("click", () => {
+      const title = document.getElementById("expTitle").value.trim();
+      const amount = Number(document.getElementById("expAmount").value);
+      if (!title || !amount) return showToast("أدخل البند والمبلغ");
+      state.expenses.push({ id: Date.now(), title, amount });
+      document.getElementById("expTitle").value = "";
+      document.getElementById("expAmount").value = "";
+      saveState();
+      renderExpenses();
+    });
+
+    function buildBudgetSummary() {
+      const total = state.expenses.reduce((acc, x) => acc + (Number(x.amount) || 0), 0);
+      return `ملخص حسبة بركة (سوق العرب الذكي):\nالراتب/الدخل: ${Number(state.salary).toLocaleString()}\nإجمالي المصروفات: ${total.toLocaleString()}`;
+    }
+
+    document.getElementById("copySummaryBtn").addEventListener("click", () => {
+      navigator.clipboard?.writeText(buildBudgetSummary());
+      showToast("تم نسخ الملخص");
+    });
+
+    document.getElementById("waSummaryBtn").addEventListener("click", () => {
+      window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(buildBudgetSummary())}`, "_blank");
+    });
+
+    function renderTasbeeh() {
+      document.getElementById("tasbeehVal").textContent = state.tasbeeh;
+    }
+
+    document.getElementById("incTasbeehBtn").addEventListener("click", () => {
+      state.tasbeeh += 1;
+      saveState();
+      renderTasbeeh();
+    });
+
+    document.getElementById("resetTasbeehBtn").addEventListener("click", () => {
+      state.tasbeeh = 0;
+      saveState();
+      renderTasbeeh();
+    });
+
+    function openJazariModal() {
+      openModal("باب مخارج الحروف — المقدمة الجزرية", `
+        <div class="verses-box">
+          مَخَارِجُ الْحُرُوفِ سَبْعَةَ عَشَرْ ** عَلَى الَّذِي يَخْتَارُهُ مَنِ اخْتَبَرْ<br/>
+          فَأَلِفُ الْجَوْفِ وَأُخْتَاهَا وَهِـيْ ** حُرُوفُ مَدٍّ لِلْهَوَاءِ تَنْتَهِـيْ<br/>
+          ثُمَّ لأَقْصَى الْحَلْقِ هَمْزٌ هَاءُ ** ثُمَّ لِوَسْطِهِ فَعَيْنٌ حَـاءُ<br/>
+          أَدْنَاهُ غَيْنٌ خَاؤُهَا وَالْقَـافُ ** أَقْصَى اللِّسَانِ فَوْقُ ثُمَّ الْكَـافُ<br/>
+          أَسْفَلُ وَالْوَسْطُ فَجِيمُ الشِّينُ يَا ** وَالضَّادُ مِنْ حَافَتِهِ إِذْ وَلِيَـا<br/>
+          لاَضْرَاسَ مِنْ أَيْسَرَ أَوْ يُمْنَاهَا ** وَاللاَّمُ أَدْنَاهَا لِمُنْتَهَاهَـا<br/>
+          وَالنُّونُ مِنْ طَرْفِهِ تَحْتُ اجْعَلُوا ** وَالرَّاءُ يُدَانِيهِ لِظَهْرٍ أَدْخَلُوا<br/>
+          وَالطَّاءُ وَالدَّالُ وَتَا مِنْهُ وَمِنْ ** عُلْيَا الثَّنَايَا وَالصَّفِيرُ مُسْتَكِنْ<br/>
+          مِنْهُ وَمِنْ فَوْقِ الثَّنَايَا السُّفْلَى ** وَالظَّاءُ وَالذَّالُ وَثَا لِلْعُلْيَـا<br/>
+          مِنْ طَرَفَيْهِمَا وَمِنْ بَطْنِ الشَّفَهْ ** فَالْفَا مَعَ أطْرَافِ الثَّنَايَا الْمُشْرِفَهْ<br/>
+          لِلشَّفَتَيْنِ الْوَاوُ بَاءٌ مِيمُ ** وَغُنَّةٌ مَخْرَجُهَا الْخَيْشُـومُ
+        </div>
+      `);
+    }
+
+    function openTuhfaModal() {
+      openModal("تحفة الأطفال — أحكام النون الساكنة والتنوين", `
+        <div class="verses-box">
+          لِلنُّونِ إِنْ تَسْكُنْ وَلِلتَّنْوِينِ ** أَرْبَعُ أَحْكَامٍ فَخُذْ تَبْيِينِي<br/>
+          فَالأَوَّلُ الإِظْهَارُ قَبْلَ أَحْرُفِ ** لِلْحَلْقِ سِتٍّ رُتِّبَتْ فَلْتَعْرِفِ<br/>
+          هَمْزٌ فَهَاءٌ ثُمَّ عَيْنٌ حَاءُ ** مُهْمَلَتَانِ ثُمَّ غَيْنٌ خَاءُ<br/>
+          وَالثَّانِ إِدْغَامٌ بِسِتَّةٍ أَتَتْ ** فِي يَرْمَلُونَ عِنْدَهُمْ قَدْ ثَبَتَتْ
+        </div>
+      `);
+    }
+
+    function openQiraatModal() {
+      openModal("القراءات العشر والقواعد", `
+        <p style="margin-bottom:8px"><strong>القراءات العشر:</strong> تشمل القراءات السبع المتواترة في الشاطبية (نافع، ابن كثير، أبو عمرو، ابن عامر، عاصم، حمزة، الكسائي) والثلاث المكملة في الدرة المضية (أبو جعفر، يعقوب، خلف العاشر).</p>
+        <p><strong>القواعد:</strong> منظومة متكاملة تشمل القاعدة النورانية والبيان المصري لتعليم التهجئة والقراءة الصحيحة.</p>
+      `);
+    }
+
+    function renderMeds() {
+      const el = document.getElementById("medsList");
+      el.innerHTML = state.meds.map(m => `
+        <div class="exp-item">
+          <div>
+            <strong style="${m.done ? 'text-decoration:line-through;color:var(--muted)' : ''}">${m.name}</strong>
+            <div style="font-size:12px;color:var(--muted)">${m.time}</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline" style="padding:5px 10px;font-size:12px" onclick="toggleMed(${m.id})">${m.done ? "تم" : "تأكيد"}</button>
+            <button class="btn-danger" onclick="deleteMed(${m.id})">حذف</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("addMedBtn").addEventListener("click", () => {
+      const name = document.getElementById("medName").value.trim();
+      const time = document.getElementById("medTime").value.trim() || "اليوم";
+      if (!name) return showToast("أدخل اسم الدواء أو الإرشاد");
+      state.meds.push({ id: Date.now(), name, time, done: false });
+      document.getElementById("medName").value = "";
+      document.getElementById("medTime").value = "";
+      saveState();
+      renderMeds();
+    });
+
+    function toggleMed(id) {
+      const m = state.meds.find(x => x.id === id);
+      if (m) m.done = !m.done;
+      saveState();
+      renderMeds();
+    }
+
+    function deleteMed(id) {
+      state.meds = state.meds.filter(x => x.id !== id);
+      saveState();
+      renderMeds();
+    }
+
+    function renderRecipes() {
+      document.getElementById("recipesGrid").innerHTML = recipes.map(r => `
+        <div class="item-card">
+          <div>
+            <span class="badge">الوقت: ${r.time}</span>
+            <h3 style="font-size:15px;margin-bottom:6px">${r.title}</h3>
+            <p style="font-size:13px;margin-bottom:6px"><strong>المكونات:</strong> ${r.ing}</p>
+            <p style="font-size:13px;color:var(--muted)"><strong>التحضير:</strong> ${r.steps}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    renderProducts();
+    calcEnvelopes();
+    renderExpenses();
+    renderTasbeeh();
+    renderMeds();
+    renderRecipes();
+  </script>
+</body>
+</html>
